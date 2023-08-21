@@ -1,0 +1,25 @@
+site_name: easy excel tool
+site_description: 一些简易、好用的excel数据处理工具，减少代码与文件冗余，提升工作的效率和代码整洁度
+repo_name: hanxinkong/easy-excel-tool
+repo_url: https://github.com/hanxinkong/easy-excel-tool
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  palette_mode: auto
+
+nav:
+  - 首页: index.md
+  - 更新日志: log.md
