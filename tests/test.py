@@ -7,7 +7,7 @@ if __name__ == '__main__':
     #     'donation_information',
     # ])
     data = [
-        {'a': 1, 'b': 5, 'c': '88'},
+        {'a': 1, 'b': 'DG文漢三 \x08🌹', 'c': '88'},
         {'a': 7, 'b': 9, 'c': 66},
     ]
     excel.write_excel(

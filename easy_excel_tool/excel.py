@@ -4,6 +4,7 @@ from typing import Dict, Any
 import pandas as pd
 from openpyxl import load_workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
+from openpyxl.cell.cell import ILLEGAL_CHARACTERS_RE
 
 __author__ = 'hanxinkong'
 __author_email__ = 'xinkonghan@gmail.com'
@@ -157,23 +158,24 @@ class Excel(object):
         :param fill_column: The last element is used as the filling column，单独在最后追加一列；bool
         :return:
         """
-        assert data, ParamError(message='Data Parameter exception')
+        assert data, 'Data Parameter exception'
 
         if not self.file:
             raise ParamError(message=f'Check file path parameters')
 
-        data = [{k: str(v) for k, v in i.items()} for i in data]
+        data = [{k: ILLEGAL_CHARACTERS_RE.sub(r'', str(v)) for k, v in i.items()} for i in data]
 
         excel_data = pd.DataFrame(data, columns=columns)
 
         if fill_column and isinstance(fill_column, dict):
             for k, v in fill_column.items():
-                excel_data[k] = str(v)
+                excel_data[k] = ILLEGAL_CHARACTERS_RE.sub(r'', str(v))
 
         '''
            If the file does not exist, create the document first
         '''
-        self.create_excel(sheet_name=sheet_name, inplace=inplace)
+        if os.path.isfile(self.file) is False or inplace:
+            self.create_excel(sheet_name=sheet_name, inplace=inplace)
 
         try:
             self.__wb = wb = load_workbook(self.file)
@@ -182,14 +184,15 @@ class Excel(object):
                Check whether the sheet name exists
                If it does not exist, the corresponding sheet will be created
             '''
-            exits_sheet_name = self.get_sheet_name(excel_file=self.file)
-            exits_sheet_name = True if sheet_name in exits_sheet_name else False
+            sheet_names = self.get_sheet_name(excel_file=self.file)
+            exits_sheet_name = True if sheet_name in sheet_names else False
 
             if exits_sheet_name is True and mode == 'w':
                 '''
                     First delete the old sheet, then create a new one
                 '''
-                self.remove_sheet(sheet_name=sheet_name)
+                if len(sheet_names) > 1:
+                    self.remove_sheet(sheet_name=sheet_name)
 
             if exits_sheet_name is False and mode == 'w+':
                 self.add_sheet(sheet_name=[sheet_name])
