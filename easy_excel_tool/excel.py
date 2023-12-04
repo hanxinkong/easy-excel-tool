@@ -163,7 +163,8 @@ class Excel(object):
         if not self.file:
             raise ParamError(message=f'Check file path parameters')
 
-        data = [{k: ILLEGAL_CHARACTERS_RE.sub(r'', str(v)) for k, v in i.items()} for i in data]
+        data = [{k: ILLEGAL_CHARACTERS_RE.sub(r'', str(v)) if isinstance(v, str) or isinstance(v, dict) or isinstance(
+            v, list) else v for k, v in i.items()} for i in data]
 
         excel_data = pd.DataFrame(data, columns=columns)
 
